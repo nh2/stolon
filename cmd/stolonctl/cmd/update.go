@@ -131,7 +131,9 @@ func update(cmd *cobra.Command, args []string) {
 		// retry if cd has been modified between reading and writing
 		_, err = e.AtomicPutClusterData(context.TODO(), cd, pair)
 		if err != nil {
-			if err == store.ErrKeyModified {
+			// Workaround for https://github.com/sorintlab/stolon/issues/487
+			// fmt.Println("inside error 4:", err)
+			if err.Error() == store.ErrKeyModified.Error() {
 				retry++
 				continue
 			}
